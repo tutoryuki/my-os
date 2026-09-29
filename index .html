@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My OS</title>
+<style>
+:root{--bg:#f3f6fc;--card:#fff;--ink:#1f2a44;--mute:#8a94a8;--accent:#5b8def;--tint:#e8f0ff;--line:#e6ebf5;--r:16px;--shadow:0 2px 14px rgba(60,90,160,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#121722;--card:#1a2130;--ink:#e6ebf7;--mute:#8e99b0;--tint:#22304d;--line:#28324a;--shadow:none}}
+*{box-sizing:border-box}
+body{margin:0;display:flex;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"PingFang HK","Noto Sans TC",sans-serif}
+a{color:var(--accent);text-decoration:none}
+aside{width:240px;flex:none;padding:20px 14px;background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:14px;position:sticky;top:0;height:100vh}
+.brand{font-weight:700;font-size:19px;color:var(--ink);padding:0 8px}
+nav{display:flex;flex-direction:column;overflow:auto;flex:1}
+nav a{color:var(--ink);padding:8px 10px;border-radius:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav a:hover{background:var(--tint)}
+.newp{display:grid;grid-template-columns:1fr auto;gap:6px}.newp input{grid-column:1/3}
+.main{flex:1;min-width:0}
+header{padding:14px 28px;display:flex;gap:10px;align-items:center}
+header form{flex:1}
+header input{width:100%;max-width:420px;padding:10px 16px;border-radius:999px}
+#menu{display:none;background:var(--tint);color:var(--accent)}
+main{padding:0 28px 60px;max-width:1100px}
+h1{font-size:26px;margin:8px 0 18px}h2{font-size:15px;margin:0 0 10px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+input,select,textarea,button{font:inherit;color:inherit}
+input,select,textarea{padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);max-width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button,.btn{padding:8px 16px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer}
+button.ghost{background:var(--tint);color:var(--accent)}
+button.danger{background:transparent;color:#d0534f;border:1px solid var(--line);margin-top:24px}
+button.x{background:transparent;color:var(--mute);padding:2px 10px}
+.card,article,.back,.dbt,.hit,.preview{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow)}
+.card{padding:18px 20px;margin-bottom:18px}
+article{padding:4px 26px;margin-bottom:18px}article:empty{display:none}
+.back{padding:14px 20px;margin-top:18px}
+.back a,.recent{display:block;padding:4px 0}
+.mute,small{color:var(--mute)}
+.dbt{border-collapse:collapse;width:100%;overflow:hidden;margin-bottom:12px}
+.dbt th{text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+.dbt td{padding:3px 6px;border-bottom:1px solid var(--line)}
+.dbt input,.dbt select{width:100%;border-color:transparent;background:transparent}
+.dbt input:hover,.dbt select:hover{border-color:var(--line)}
+.wrap{overflow-x:auto}
+.editor{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.editor textarea{height:65vh;font:15px/1.6 ui-monospace,Menlo,monospace;resize:vertical}
+.preview{padding:4px 24px;height:65vh;overflow:auto}
+.editor p{grid-column:1/3;margin:0}
+.hit{display:block;padding:12px 18px;margin-bottom:10px;color:var(--ink)}.hit span{display:block;color:var(--mute);font-size:14px}
+mark{background:var(--tint);color:var(--ink);border-radius:3px}
+pre{overflow:auto;padding:12px;border-radius:10px;background:var(--bg)}
+blockquote{margin:0;padding-left:14px;border-left:3px solid var(--line);color:var(--mute)}
+@media(max-width:900px){
+ aside{position:fixed;z-index:9;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:var(--shadow)}
+ aside.open{transform:none}#menu{display:block}
+ .editor{grid-template-columns:1fr}.editor p{grid-column:1}.editor textarea,.preview{height:45vh}
+ main,header{padding-left:16px;padding-right:16px}
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}.grid .card{margin:0}
+.tl{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px}.tl>span{flex:1}.tl>small:first-child{min-width:82px}
+.tl.now{background:var(--tint)}.late{color:#d0534f}
+.fw{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}.fw input:not([type=checkbox]){flex:1;min-width:90px}
+.ib{padding:8px 0;border-bottom:1px solid var(--line)}.ib>div{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}.ib button{padding:4px 10px;font-size:14px}
+.proj{display:grid;grid-template-columns:1fr 90px auto;gap:10px;align-items:center;padding:6px 0}
+.bar{height:6px;border-radius:9px;background:var(--tint)}.bar i{display:block;height:100%;border-radius:9px;background:var(--accent)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;gap:4px}.cal b{color:var(--mute);font-weight:500;font-size:12px}
+.cal span{padding:5px 0;border-radius:50%}.cal .today{background:var(--accent);color:#fff}.cal .due{box-shadow:inset 0 -3px 0 var(--accent)}
+.daily{display:grid;gap:10px}.daily label{display:grid;gap:4px;color:var(--mute);font-size:13px}
+.ai{border:1px dashed var(--line);box-shadow:none;background:transparent}.ai input{width:100%}
+</style>
+</head>
+<body>
+<aside id="side">
+ <a class="brand" href="#/">My OS</a>
+ <nav id="nav"></nav>
+ <form id="newf" class="newp"><input name="title" placeholder="新頁面名稱" required>
+  <select name="kind"><option value="note">頁面</option><option value="db">Database</option></select><button>建立</button></form>
+ <button class="ghost" id="backup">備份資料 (JSON)</button>
+</aside>
+<div class="main">
+ <header><button id="menu" aria-label="選單">☰</button>
+  <form id="sf"><input id="q" type="search" placeholder="搜尋全部內容"></form></header>
+ <main id="main"></main>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const href=t=>'#/p/'+encodeURIComponent(t);
+let D,P=[];
+
+// ---------- storage (IndexedDB) ----------
+const openDB=()=>new Promise((ok,no)=>{const r=indexedDB.open('myos',1);
+ r.onupgradeneeded=()=>r.result.createObjectStore('pages',{keyPath:'id'});
+ r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+const st=m=>D.transaction('pages',m).objectStore('pages');
+const loadAll=()=>new Promise(ok=>{const q=st('readonly').getAll();q.onsuccess=()=>ok(q.result)});
+const put=p=>{p.updated=Date.now();return new Promise(ok=>{const q=st('readwrite').put(p);q.onsuccess=ok})};
+const rm=id=>new Promise(ok=>{const q=st('readwrite').delete(id);q.onsuccess=ok});
+const find=t=>P.find(p=>p.id===String(t).toLowerCase());
+async function mk(title,kind='note',body='',cols=[],rows=[]){
+ const p={id:title.toLowerCase(),title,kind,body,cols,rows};P.push(p);await put(p);return p}
+
+async function seed(){
+ if(P.length)return;
+ await mk('Welcome','note','# 歡迎\n\n頁面用 Markdown 寫。用 [[維基連結]] 連去其他頁面，底部會自動顯示反向連結。\n\n試吓開 [[Projects]] 同 [[Tasks]]。');
+ await mk('Projects','db','',[{name:'Name',type:'text'},{name:'Progress',type:'number'},{name:'Status',type:'select',options:'In progress,On track,Review,Done'}]);
+ await mk('Tasks','db','',[{name:'Task',type:'text'},{name:'Due',type:'date'},{name:'Status',type:'select',options:'To do,Done'}]);
+ await mk('Daily log','db','',[{name:'Date',type:'date'},{name:'Sleep',type:'number'},{name:'Mood',type:'select',options:'Great,Good,Okay,Low'},{name:'Idea',type:'text'}]);
+}
+
+// ---------- markdown (small, escapes HTML) ----------
+function inline(s){
+ return e(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<i>$1</i>')
+ .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(_,t,l)=>`<a href="${href(t.trim())}">${l||t.trim()}</a>`)
+ .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+function md(src){
+ const L=src.split('\n');let h='',i=0,para=[];
+ const flush=()=>{if(para.length){h+='<p>'+para.map(inline).join('<br>')+'</p>';para=[]}};
+ while(i<L.length){const l=L[i];let m;
+  if(/^```/.test(l)){flush();let c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(L[i++]);h+='<pre>'+e(c.join('\n'))+'</pre>';i++;continue}
+  if(m=l.match(/^(#{1,6})\s+(.*)/)){flush();h+=`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`;i++;continue}
+  if(/^\s*([-*]|\d+\.)\s+/.test(l)){flush();const o=/^\s*\d+\./.test(l);let it=[];
+   while(i<L.length&&/^\s*([-*]|\d+\.)\s+/.test(L[i]))it.push('<li>'+inline(L[i++].replace(/^\s*([-*]|\d+\.)\s+/,''))+'</li>');
+   h+=(o?'<ol>':'<ul>')+it.join('')+(o?'</ol>':'</ul>');continue}
+  if(/^>\s?/.test(l)){flush();h+='<blockquote>'+inline(l.replace(/^>\s?/,''))+'</blockquote>';i++;continue}
+  if(!l.trim()){flush();i++;continue}
+  para.push(l);i++}
+ flush();return h;
+}
+const linksOf=b=>[...b.matchAll(/\[\[([^\]|]+)/g)].map(m=>m[1].trim().toLowerCase());
+
+// ---------- views ----------
+function nav(){$('#nav').innerHTML=[...P].sort((a,b)=>a.title.localeCompare(b.title))
+ .map(p=>`<a href="${href(p.title)}">${p.kind==='db'?'▦':'▤'} ${e(p.title)}</a>`).join('')}
+
+const T=()=>new Date().toLocaleDateString('sv');
+const rowsOf=t=>(find(t)||{rows:[]}).rows;
+const sv=t=>put(find(t));
+async function ensure(){
+ const need=[['Schedule',[{name:'Date',type:'date'},{name:'Start',type:'text'},{name:'End',type:'text'},{name:'Title',type:'text'}]],
+  ['Routine',[{name:'Start',type:'text'},{name:'End',type:'text'},{name:'Title',type:'text'}]],
+  ['Inbox',[{name:'Idea',type:'text'},{name:'Added',type:'date'}]]];
+ for(const [t,c] of need)if(!find(t))await mk(t,'db','',c);
+}
+function calCard(dues){
+ const t=T(),d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate();
+ let h=`<h2>${y} 年 ${m+1} 月</h2><div class="cal">`+[...'日一二三四五六'].map(x=>`<b>${x}</b>`).join('')+'<i></i>'.repeat(first);
+ for(let i=1;i<=n;i++){const k=`${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+  h+=`<span class="${k===t?'today ':''}${dues.has(k)?'due':''}">${i}</span>`}
+ return h+'</div>';
+}
+function home(){
+ const t=T(),d=new Date(),now=d.toTimeString().slice(0,5);
+ const items=[...rowsOf('Routine').map((r,i)=>({...r,src:'Routine',i})),
+  ...rowsOf('Schedule').map((r,i)=>({...r,src:'Schedule',i})).filter(r=>r.Date===t)]
+  .filter(r=>r.Title).sort((a,b)=>(a.Start||'99').localeCompare(b.Start||'99'));
+ const tasksAll=rowsOf('Tasks').map((r,i)=>({...r,i}));
+ const tasks=tasksAll.filter(r=>r.Status!=='Done'&&r.Task).sort((a,b)=>(a.Due||'9').localeCompare(b.Due||'9')).slice(0,8);
+ const dues=new Set([...tasksAll.filter(r=>r.Status!=='Done'&&r.Due).map(r=>r.Due),...rowsOf('Schedule').map(r=>r.Date)]);
+ const inbox=rowsOf('Inbox').map((r,i)=>({...r,i})).filter(r=>r.Idea);
+ const daily=rowsOf('Daily log').find(r=>r.Date===t)||{};
+ const rec=P.filter(p=>p.kind==='note').sort((a,b)=>b.updated-a.updated).slice(0,6);
+ const projs=rowsOf('Projects').filter(r=>r.Name);
+ return `<h1>${d.toLocaleDateString('zh-HK',{month:'long',day:'numeric',weekday:'long'})}</h1><div class="grid">
+<section class="card"><h2>今日時間表</h2>${items.map(r=>`<div class="tl${r.Start&&r.Start<=now&&now<(r.End||'24:00')?' now':''}"><small>${e(r.Start)}${r.End?'–'+e(r.End):''}</small><span>${e(r.Title)}${r.src==='Routine'?' <small>每日</small>':''}</span><button class="x" data-a="delitem" data-src="${r.src}" data-i="${r.i}" aria-label="刪除">×</button></div>`).join('')||'<p class="mute">今日未有安排。</p>'}
+<form data-f="sched" class="fw"><input name="title" placeholder="事項" required><input name="start" type="time" required><input name="end" type="time"><label class="mute"><input type="checkbox" name="rep"> 每日重複</label><button>加入</button></form></section>
+<section class="card"><h2>To-do</h2>${tasks.map(r=>`<div class="tl"><input type="checkbox" data-a="done" data-i="${r.i}" aria-label="完成"><span>${e(r.Task)}</span>${r.Due?`<small class="${r.Due<t?'late':''}">${e(r.Due)}</small>`:''}</div>`).join('')||'<p class="mute">冇未完成嘅事項。</p>'}
+<form data-f="task" class="fw"><input name="task" placeholder="加任務" required><button>加入</button></form></section>
+<section class="card"><h2>收件箱 <small>${inbox.length} 項待整理</small></h2>${inbox.map(r=>`<div class="ib"><span>${e(r.Idea)}</span><div><button class="ghost" data-a="toTask" data-i="${r.i}">變 To-do</button> <button class="ghost" data-a="toNote" data-i="${r.i}">變筆記</button> <button class="x" data-a="delInbox" data-i="${r.i}" aria-label="刪除">×</button></div></div>`).join('')||'<p class="mute">收件箱清空咗。</p>'}
+<form data-f="inbox" class="fw"><input name="idea" placeholder="隨手記低，遲啲再整理" required><button>記低</button></form></section>
+<section class="card">${calCard(dues)}</section>
+<section class="card"><h2>項目進度</h2>${projs.map(r=>`<div class="proj"><span>${e(r.Name)}</span><div class="bar"><i style="width:${Math.max(0,Math.min(100,+r.Progress||0))}%"></i></div><small>${+r.Progress||0}% ${e(r.Status)}</small></div>`).join('')||'<p class="mute">未有項目，去 <a href="#/p/Projects">Projects</a> 加。</p>'}</section>
+<section class="card"><h2>今日狀態</h2><form data-f="daily" class="daily"><label>瞓咗幾多小時<input name="sleep" type="number" step="0.25" value="${e(daily.Sleep)}"></label>
+<label>心情<select name="mood"><option></option>${['Great','Good','Okay','Low'].map(m=>`<option${m===daily.Mood?' selected':''}>${m}</option>`).join('')}</select></label>
+<label>今日靈感<textarea name="idea" rows="2">${e(daily.Idea)}</textarea></label><button>儲存</button></form></section>
+<section class="card"><h2>最近筆記</h2>${rec.map(p=>`<a class="recent" href="${href(p.title)}">${e(p.title)}</a>`).join('')}</section>
+<section class="card ai"><h2>AI Assistant</h2><p class="mute">Coming soon。將來接邊個 AI 都得，版面唔使改。</p><input disabled placeholder="Ask anything…"></section></div>`;
+}
+const FORMS={
+ async sched(f){const r={Start:f.start.value,End:f.end.value,Title:f.title.value.trim()};
+  if(f.rep.checked){rowsOf('Routine').push(r);await sv('Routine')}else{rowsOf('Schedule').push({Date:T(),...r});await sv('Schedule')}},
+ async task(f){rowsOf('Tasks').push({Task:f.task.value.trim(),Due:T(),Status:'To do'});await sv('Tasks')},
+ async inbox(f){rowsOf('Inbox').push({Idea:f.idea.value.trim(),Added:T()});await sv('Inbox')},
+ async daily(f){const r=rowsOf('Daily log');let x=r.find(y=>y.Date===T());if(!x)r.push(x={Date:T()});
+  Object.assign(x,{Sleep:f.sleep.value,Mood:f.mood.value,Idea:f.idea.value});await sv('Daily log')}
+};
+const ACTS={
+ async delitem(b){rowsOf(b.src).splice(+b.i,1);await sv(b.src)},
+ async done(b){rowsOf('Tasks')[+b.i].Status='Done';await sv('Tasks')},
+ async delInbox(b){rowsOf('Inbox').splice(+b.i,1);await sv('Inbox')},
+ async toTask(b){const [x]=rowsOf('Inbox').splice(+b.i,1);rowsOf('Tasks').push({Task:x.Idea,Due:T(),Status:'To do'});await sv('Inbox');await sv('Tasks')},
+ async toNote(b){const [x]=rowsOf('Inbox').splice(+b.i,1);let n=x.Idea.slice(0,24).replace(/[\/\\]/g,'-');
+  if(find(n))n+=' '+Date.now().toString().slice(-4);await mk(n,'note',x.Idea);await sv('Inbox')}
+};
+function bindHome(){
+ document.querySelectorAll('#main form[data-f]').forEach(f=>f.onsubmit=async ev=>{ev.preventDefault();await FORMS[f.dataset.f](f);route()});
+ document.querySelectorAll('#main [data-a]').forEach(b=>b.onclick=async()=>{await ACTS[b.dataset.a](b.dataset);route()});
+}
+
+function dbTable(p){
+ const cell=(c,v,i,j)=>{const a=`data-i="${i}" data-j="${j}" aria-label="${e(c.name)}"`;
+  if(c.type==='select')return `<select ${a}><option></option>${(c.options||'').split(',').map(o=>o.trim()).filter(Boolean).map(o=>`<option${o===v?' selected':''}>${e(o)}</option>`).join('')}</select>`;
+  return `<input ${a} type="${c.type==='number'?'number':c.type==='date'?'date':'text'}" step="any" value="${e(v)}">`};
+ return `<div class="wrap"><table class="dbt"><thead><tr>${p.cols.map(c=>`<th>${e(c.name)} <small>${c.type}</small></th>`).join('')}<th></th></tr></thead>
+ <tbody>${p.rows.map((r,i)=>`<tr>${p.cols.map((c,j)=>`<td>${cell(c,r[c.name]??'',i,j)}</td>`).join('')}<td><button class="x" data-del="${i}" aria-label="刪除列">×</button></td></tr>`).join('')}</tbody></table></div>
+ <p><button id="addrow">加一列</button> <button id="addcol" class="ghost">加一欄</button></p>`;
+}
+
+function bindDb(p){
+ const t=document.querySelector('.dbt');if(!t)return;
+ t.addEventListener('change',async ev=>{const el=ev.target;if(el.dataset.i===undefined)return;
+  p.rows[+el.dataset.i][p.cols[+el.dataset.j].name]=el.value;await put(p)});
+ t.addEventListener('click',async ev=>{const i=ev.target.dataset.del;if(i===undefined)return;p.rows.splice(+i,1);await put(p);route()});
+ $('#addrow').onclick=async()=>{p.rows.push({});await put(p);route()};
+ $('#addcol').onclick=async()=>{
+  const name=(prompt('欄位名稱')||'').trim();if(!name)return;
+  const type=(prompt('類型：text、number、date 或 select','text')||'text').trim().toLowerCase();
+  if(!['text','number','date','select'].includes(type))return alert('類型只可以係 text、number、date 或 select');
+  const c={name,type};if(type==='select')c.options=prompt('選項，用逗號分隔')||'';
+  p.cols.push(c);await put(p);route()};
+}
+
+function viewPage(t){
+ const p=find(t);
+ if(!p)return `<h1>${e(t)}</h1><p>呢頁未存在。</p><button id="mkmissing">建立呢頁</button>`;
+ const back=P.filter(x=>x.id!==p.id&&linksOf(x.body).includes(p.id));
+ return `<div class="head"><h1>${e(p.title)}</h1><a class="btn" href="#/e/${encodeURIComponent(p.title)}">編輯</a></div>
+ <article>${md(p.body)}</article>${p.kind==='db'?dbTable(p):''}
+ <section class="back"><h2>反向連結</h2>${back.map(b=>`<a href="${href(b.title)}">${e(b.title)}</a>`).join('')||'<p class="mute">未有頁面連結到呢度。</p>'}</section>
+ <button class="danger" id="delp">刪除呢頁</button>`;
+}
+
+function viewEdit(t){
+ const p=find(t);if(!p){location.hash='#/';return ''}
+ return `<div class="head"><h1>${e(p.title)}</h1></div><div class="editor">
+ <textarea id="src" spellcheck="false">${e(p.body)}</textarea><div id="pv" class="preview">${md(p.body)}</div>
+ <p><button id="save">儲存</button> <a href="${href(p.title)}">取消</a></p></div>`;
+}
+
+function viewSearch(q){
+ const k=q.toLowerCase();
+ const hits=k?P.map(p=>{
+  const rows=p.kind==='db'?p.rows.map(r=>Object.values(r).join(' ')).join('\n'):'';
+  const txt=p.body+'\n'+rows;const ti=p.title.toLowerCase().includes(k),bi=txt.toLowerCase().indexOf(k);
+  if(!ti&&bi<0)return null;
+  const s=bi<0?txt.slice(0,100):txt.slice(Math.max(0,bi-30),bi+80);return {p,s,ti}}).filter(Boolean).sort((a,b)=>b.ti-a.ti):[];
+ const mark=s=>e(s).replace(new RegExp(e(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<mark>${m}</mark>`);
+ return `<h1>搜尋</h1>${hits.map(h=>`<a class="hit" href="${href(h.p.title)}"><b>${e(h.p.title)}</b><span>${mark(h.s)}</span></a>`).join('')||(q?'<p class="mute">搵唔到。</p>':'')}`;
+}
+
+async function route(){
+ nav();$('#side').classList.remove('open');
+ const [,r,a]=location.hash.split('/');const arg=decodeURIComponent(a||'');
+ const main=$('#main');
+ main.innerHTML=r==='p'?viewPage(arg):r==='e'?viewEdit(arg):r==='s'?viewSearch(arg):home();
+ window.scrollTo(0,0);
+ if(!['p','e','s'].includes(r))bindHome();
+ if(r==='p'){const p=find(arg);if(p)bindDb(p);
+  const d=$('#delp');if(d)d.onclick=async()=>{if(confirm('確定刪除？')){await rm(p.id);P=P.filter(x=>x!==p);location.hash='#/'}};
+  const m=$('#mkmissing');if(m)m.onclick=async()=>{await mk(arg.replace(/[\/\\]/g,'-'),'note');location.hash='#/e/'+encodeURIComponent(arg)}}
+ if(r==='e'){const p=find(arg),src=$('#src'),pv=$('#pv');let tm;
+  src.oninput=()=>{clearTimeout(tm);tm=setTimeout(()=>pv.innerHTML=md(src.value),150)};
+  $('#save').onclick=async()=>{p.body=src.value;await put(p);location.hash=href(p.title)}}
+}
+
+// ---------- wiring ----------
+$('#menu').onclick=()=>$('#side').classList.toggle('open');
+$('#sf').onsubmit=ev=>{ev.preventDefault();location.hash='#/s/'+encodeURIComponent($('#q').value.trim())};
+$('#newf').onsubmit=async ev=>{ev.preventDefault();const f=ev.target;
+ const t=f.title.value.trim().replace(/[\/\\]/g,'-');if(!t)return;
+ if(!find(t))await mk(t,f.kind.value,'',f.kind.value==='db'?[{name:'Name',type:'text'}]:[]);
+ f.reset();location.hash='#/e/'+encodeURIComponent(t)};
+$('#backup').onclick=()=>{const b=new Blob([JSON.stringify(P,null,1)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='my-os-backup-'+new Date().toLocaleDateString('sv')+'.json';a.click()};
+window.addEventListener('hashchange',route);
+(async()=>{D=await openDB();P=await loadAll();await seed();await ensure();
+ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+ route()})();
+</script>
+</body>
+</html>
